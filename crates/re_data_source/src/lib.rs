@@ -14,9 +14,13 @@ mod web_sockets;
 #[cfg(not(target_arch = "wasm32"))]
 mod load_stdin;
 
+#[cfg(feature = "directory-loader")]
+pub use self::data_loader::DirectoryLoader;
+#[cfg(feature = "gitignore-directory-loader")]
+pub use self::data_loader::GitignoreDirectoryLoader;
 pub use self::data_loader::{
     iter_loaders, register_custom_data_loader, ArchetypeLoader, DataLoader, DataLoaderError,
-    DirectoryLoader, LoadedData, RrdLoader,
+    LoadedData, RrdLoader,
 };
 pub use self::data_source::DataSource;
 pub use self::load_file::{extension, load_from_file_contents};

@@ -17,7 +17,9 @@ all-features = true
 
 
 [features]
-default = []
+default = ["directory-loader"]
+directory-loader = []
+gitignore-directory-loader = ["dep:ignore"]
 
 
 [dependencies]
@@ -38,6 +40,9 @@ parking_lot.workspace = true
 rayon.workspace = true
 thiserror.workspace = true
 walkdir.workspace = true
+
+# Optional
+ignore = { version = "0.4", optional = true }
 
 [build-dependencies]
 re_build_tools.workspace = true

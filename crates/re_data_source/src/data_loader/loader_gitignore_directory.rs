@@ -1,16 +1,13 @@
-/// Recursively loads entire directories, using the appropriate [`crate::DataLoader`]:s for each
-/// files within.
-//
-// TODO(cmc): There are a lot more things than can be done be done when it comes to the semantics
-// of a folder, e.g.: HIVE-like partitioning, similarly named files with different indices and/or
-// timestamps (e.g. a folder of video frames), etc.
-// We could support some of those at some point, or at least add examples to show users how.
-pub struct DirectoryLoader;
+use ignore::WalkBuilder;
 
-impl crate::DataLoader for DirectoryLoader {
+/// Recursively loads entire directories which contain .gitignore file, using the appropriate [`crate::DataLoader`]:s for each
+/// files within which aren't ignored.
+pub struct GitignoreDirectoryLoader;
+
+impl crate::DataLoader for GitignoreDirectoryLoader {
     #[inline]
     fn name(&self) -> String {
-        "rerun.data_loaders.Directory".into()
+        "rerun.data_loaders.GitignoreDirectory".into()
     }
 
     #[cfg(not(target_arch = "wasm32"))]
@@ -28,7 +25,7 @@ impl crate::DataLoader for DirectoryLoader {
 
         re_log::debug!(?dirpath, loader = self.name(), "Loading directory…",);
 
-        for entry in walkdir::WalkDir::new(&dirpath) {
+        for entry in WalkBuilder::new(dirpath.as_path()).build() {
             let entry = match entry {
                 Ok(entry) => entry,
                 Err(err) => {

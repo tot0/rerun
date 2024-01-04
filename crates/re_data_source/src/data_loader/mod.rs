@@ -228,7 +228,10 @@ static BUILTIN_LOADERS: Lazy<Vec<Arc<dyn DataLoader>>> = Lazy::new(|| {
     vec![
         Arc::new(RrdLoader) as Arc<dyn DataLoader>,
         Arc::new(ArchetypeLoader),
+        #[cfg(feature = "directory-loader")]
         Arc::new(DirectoryLoader),
+        #[cfg(feature = "gitignore-directory-loader")]
+        Arc::new(GitignoreDirectoryLoader),
         #[cfg(not(target_arch = "wasm32"))]
         Arc::new(ExternalLoader),
     ]
@@ -261,14 +264,20 @@ pub fn register_custom_data_loader(loader: impl DataLoader + 'static) {
 // ---
 
 mod loader_archetype;
+#[cfg(feature = "directory-loader")]
 mod loader_directory;
+#[cfg(feature = "gitignore-directory-loader")]
+mod loader_gitignore_directory;
 mod loader_rrd;
 
 #[cfg(not(target_arch = "wasm32"))]
 mod loader_external;
 
 pub use self::loader_archetype::ArchetypeLoader;
+#[cfg(feature = "directory-loader")]
 pub use self::loader_directory::DirectoryLoader;
+#[cfg(feature = "gitignore-directory-loader")]
+pub use self::loader_gitignore_directory::GitignoreDirectoryLoader;
 pub use self::loader_rrd::RrdLoader;
 
 #[cfg(not(target_arch = "wasm32"))]
